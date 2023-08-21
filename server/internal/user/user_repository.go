@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"fmt"
 )
 
 type DBTX interface {
@@ -41,4 +42,52 @@ func (r *repository) GetUserByEmail(ctx context.Context, email string) (*User, e
 	}
 
 	return &u, nil
+}
+
+func (r *repository) CreateMessage(ctx context.Context, message *Message) (*Message, error) {
+	query := "INSERT INTO messages(username, room_id, content) VALUES ($1, $2, $3)"
+
+	_, err := r.db.ExecContext(ctx, query, message.Username, message.RoomID, message.Content)
+	if err != nil {
+		fmt.Println("Error with db:", err)
+		return nil, err
+	}
+
+	/*err := r.db.QueryRowContext(ctx, query, message.Username, message.RoomID, message.Content)
+	if err != nil {
+		fmt.Print("error with db")
+		fmt.Print(err.)
+		return &Message{}, nil
+	}*/
+	return message, nil
+}
+
+func (r *repository) GetAllMessages(ctx context.Context, req *GetAllMessagesReq) (*[]Message, error) {
+	var messages []Message
+
+	query := "SELECT username, room_id, content FROM messages WHERE room_id = $1"
+	fmt.Print("ROOMID: " + req.RoomID)
+	rows, err := r.db.QueryContext(ctx, query, req.RoomID)
+	if err != nil {
+		fmt.Println("error with db at get all: " + err.Error())
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var message Message
+		if err := rows.Scan(&message.Username, &message.RoomID, &message.Content); err != nil {
+			fmt.Print(err)
+			return nil, err
+		}
+		messages = append(messages, message)
+
+	}
+	fmt.Print(messages)
+
+	/*res := &GetAllMessagesRes{
+		Messages: messages,
+	}*/
+
+	return &messages, nil
 }

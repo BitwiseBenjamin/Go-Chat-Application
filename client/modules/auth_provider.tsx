@@ -1,10 +1,12 @@
 import { useState, createContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { API_URL } from '../constants'
 
 export type UserInfo = {
   username: string
   id: string
 }
+
 
 export const AuthContext = createContext<{
   authenticated: boolean
@@ -25,7 +27,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
 
   useEffect(() => {
-    const userInfo = localStorage.getItem('user_info')
+    const userInfo = localStorage.getItem('user_info');
 
     if (!userInfo) {
       if (window.location.pathname != '/signup') {

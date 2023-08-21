@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"fmt"
 	"server/util"
 	"strconv"
 	"time"
@@ -89,4 +90,46 @@ func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, er
 	}
 
 	return &LoginUserRes{accessToken: ss, Username: u.Username, ID: strconv.Itoa(int(u.ID))}, nil
+}
+
+func (s *service) CreateMessage(c context.Context, req *CreateMessageReq) (*CreateMessageRes, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	m := &Message{
+		Username: req.Username,
+		RoomID:   req.RoomID,
+		Content:  req.Content,
+	}
+
+	r, err := s.Repository.CreateMessage(ctx, m)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &CreateMessageRes{
+		Username: r.Username,
+		RoomID:   r.RoomID,
+		Content:  r.Content,
+	}
+
+	return res, nil
+}
+
+func (s *service) GetAllMessages(c context.Context, req *GetAllMessagesReq) (*GetAllMessagesRes, error) {
+	fmt.Print("service layer\n")
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	r, err := s.Repository.GetAllMessages(ctx, req)
+	if err != nil {
+		fmt.Print(err)
+		return nil, err
+	}
+
+	res := &GetAllMessagesRes{
+		Messages: r,
+	}
+
+	return res, nil
 }

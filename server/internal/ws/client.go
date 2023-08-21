@@ -8,13 +8,19 @@ import (
 
 type Client struct {
 	Conn     *websocket.Conn
-	Message  chan *Message
+	Message  chan *NewMessage
 	ID       string `json:"id"`
 	RoomID   string `json:"roomId"`
 	Username string `json:"username"`
 }
 
-type Message struct {
+/*type Message struct {
+	Content  string `json:"content"`
+	RoomID   string `json:"roomId"`
+	Username string `json:"username"`
+}*/
+
+type NewMessage struct {
 	Content  string `json:"content"`
 	RoomID   string `json:"roomId"`
 	Username string `json:"username"`
@@ -50,7 +56,7 @@ func (c *Client) readMessage(hub *Hub) {
 			break
 		}
 
-		msg := &Message{
+		msg := &NewMessage{
 			Content:  string(m),
 			RoomID:   c.RoomID,
 			Username: c.Username,

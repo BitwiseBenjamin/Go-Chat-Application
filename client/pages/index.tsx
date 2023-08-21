@@ -67,9 +67,30 @@ const index = () => {
     }
   }
 
+//logout of server and client
+  const logout = async () => {
+    try {
+      const res = await fetch(`${API_URL}/logout`, {
+        method: 'GET',
+      })
+        
+        localStorage.removeItem('user_info')
+        return router.push('/login')
+      
+    } catch (err) {
+      console.log(err)
+      
+    }
+    return router.push('/login')
+  }
+
   return (
     <>
       <div className='my-8 px-4 md:mx-32 w-full h-full'>
+      <button className='bg-red border text-white rounded-md p-2 md:ml-0' onClick={logout}>
+            logout
+          </button>
+      
         <div className='flex justify-center mt-3 p-5'>
           <input
             type='text'

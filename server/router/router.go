@@ -15,7 +15,7 @@ func InitRouter(userHandler *user.Handler, wsHandler *ws.Handler) {
 	r = gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001"},
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -28,7 +28,9 @@ func InitRouter(userHandler *user.Handler, wsHandler *ws.Handler) {
 
 	r.POST("/signup", userHandler.CreateUser)
 	r.POST("/login", userHandler.Login)
+	r.POST("/createMessage/:roomId", userHandler.CreateMessage)
 	r.GET("/logout", userHandler.Logout)
+	r.GET("/GetAllMessages/:roomId", userHandler.GetAllMessages)
 
 	r.POST("/ws/createRoom", wsHandler.CreateRoom)
 	r.GET("/ws/joinRoom/:roomId", wsHandler.JoinRoom)
