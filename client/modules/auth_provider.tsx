@@ -27,22 +27,39 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
 
   useEffect(() => {
-    const userInfo = localStorage.getItem('user_info');
 
-    if (!userInfo) {
-      if (window.location.pathname != '/signup') {
-        router.push('/login')
-        return
-      }
-    } else {
-      const user: UserInfo = JSON.parse(userInfo)
-      if (user) {
-        setUser({
-          username: user.username,
-          id: user.id,
+    const jwtCookie = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('jwt='));
+
+      console.log("Cookie:?" + jwtCookie)
+
+      if (jwtCookie) {
+        const jwtToken = jwtCookie.split('=')[1];
+
+        fetch(`${API_URL}/validateToken`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
         })
-      }
-      setAuthenticated(true)
+          .then(response => response.json())
+          .then(data => {
+            if (data.valid) {
+              setUser({
+                username: data.username,
+                id: data.id,
+              });
+              setAuthenticated(true);
+            } else {
+              // Token is not valid, redirect to login
+              router.push('/login');
+            }
+          })
+          .catch(error => {
+            console.error('Token validation error:', error);
+            router.push('/login');
+          });
     }
   }, [authenticated])
 

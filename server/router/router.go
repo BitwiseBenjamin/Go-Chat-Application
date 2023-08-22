@@ -14,8 +14,10 @@ var r *gin.Engine
 func InitRouter(userHandler *user.Handler, wsHandler *ws.Handler) {
 	r = gin.Default()
 
+	//AllowOrigins:     []string{"https://your-production-domain.com"},
+
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001"},
+		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},

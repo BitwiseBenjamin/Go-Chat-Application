@@ -14,7 +14,7 @@ export type Message = {
   type: 'recv' | 'self'
 }
 
-const index = () => {
+const Index = () => {
   const [messages, setMessage] = useState<Array<Message>>([])
   const textarea = useRef<HTMLTextAreaElement>(null)
   const { conn } = useContext(WebsocketContext)
@@ -33,7 +33,6 @@ const index = () => {
           return
         }
         const roomId = conn.url.split('/')[5]
-        console.log(conn.url)
         getOldMessages(roomId);
         setHasFetchedData(true);
       }
@@ -74,7 +73,6 @@ const index = () => {
     }
 
     conn.onmessage = (message) => {
-      console.log("conn.onmessage")
       const m: Message = JSON.parse(message.data)
       if (m.content == 'A new user has joined the room') {
         setUsers([...users, { username: m.username }])
@@ -104,8 +102,6 @@ const index = () => {
 
   const sendMessageToBackend = async (message: Message) => {
     try{
-      console.log("send message to backend")
-      console.log(message.content + "\n" + message.room_id + "\nuser: " + message.username)
       const res = await fetch(`${API_URL}/createMessage/${message.room_id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -139,13 +135,11 @@ const index = () => {
   }
 
   async function getOldMessages(roomId: string){
-    console.log("getoldmessages: \n")
     try{
         const res = await fetch(`${API_URL}/GetAllMessages/${roomId}`, {
           method: 'GET',
         })
         const data = await res.json()
-        console.log(data)
 
         if (data.messages !== undefined) {
           if (data.messages !== null) {
@@ -159,7 +153,6 @@ const index = () => {
             };
           });
 
-          console.log("Message Objects: \n" + messageObjects)
           setMessage(messageObjects);
         }
       }
@@ -208,4 +201,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index
