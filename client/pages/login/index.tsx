@@ -22,7 +22,7 @@ const Index = () => {
       router.push('/')
       return
     }
-  }, [authenticated])
+  }, [authenticated, router])
 
 
   const changeHandler = (e: React.SyntheticEvent) => {

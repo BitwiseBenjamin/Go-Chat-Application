@@ -61,7 +61,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
             router.push('/login');
           });
     }
-  }, [authenticated])
+  }, [authenticated, router])
 
   return (
     <AuthContext.Provider

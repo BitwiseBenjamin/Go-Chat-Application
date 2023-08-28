@@ -36,7 +36,7 @@ const Index = () => {
         getOldMessages(roomId);
         setHasFetchedData(true);
       }
-    }, [hasFetchedData]);
+    }, [hasFetchedData, conn, router]);
 
   useEffect(() => {
     if (conn === null) {
@@ -60,7 +60,7 @@ const Index = () => {
       }
     }
     getUsers()
-  }, [])
+  }, [router, conn])
 
   useEffect(() => {
     if (textarea.current) {
@@ -91,13 +91,13 @@ const Index = () => {
       //send message to backend
       sendMessageToBackend(m)
 
-      setMessage([...messages, m])
+      setMessage([...messages, m,])
     }
 
     conn.onclose = () => {}
     conn.onerror = () => {}
     conn.onopen = () => {}
-  }, [textarea, messages, conn, users])
+  }, [textarea, messages, conn, users, user?.username, router])
 
 
   const sendMessageToBackend = async (message: Message) => {
